@@ -4,9 +4,9 @@ from rest_framework.response import Response
 from .models import *
 from .serializers import *
 from django.contrib.auth import authenticate,login as auth_login
-from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils import timezone
-from rest_framework_simplejwt import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.tokens import RefreshToken
 
 # Configure the logger
 events_logger = logging.getLogger('events')
