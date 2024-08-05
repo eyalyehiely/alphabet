@@ -6,7 +6,7 @@ urlpatterns = [
     path('event/<uuid:id>/', event, name='event_detail'),
     path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    # path('users/', UserListCreate.as_view(), name='user-list-create'),
-    # path('users/<uuid:id>/', UserDetail.as_view(), name='user-detail'),
-   
+    path('signin/', signin, name='signin'),
+    path('users/', users, name='event_list'),
+    path('user/<uuid:id>/', user, name='user_detail'),   
 ]

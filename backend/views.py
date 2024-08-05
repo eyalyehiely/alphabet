@@ -109,7 +109,8 @@ def event(request, name, location, starting_time, end_time,id, participants):
             if event.exists():
                 events_logger.debug('Event found')
                 event.delete()
-                return Response({'message': 'Event deleted'}, status=200)
+                events_logger.debug(f'Event {event.name} deleted')
+                return Response({'message': f'Event {event.name} deleted'}, status=200)
             else:
                 events_logger.debug('No events found')
                 return Response({'message': 'No events found'}, status=404)
@@ -177,6 +178,66 @@ def users(request,email,password):
             new_user.save()
             users_logger.debug('New User saved')
             return Response({'message': 'User created successfully'}, status=201)
+    except Exception as e:
+        users_logger.error('Error occurred: %s', e)
+        return Response({'error': str(e)}, status=500)
+    
+
+
+
+
+@api_view(['GET','PUT','DELETE'])
+def user(request,id, email, password):
+    try:
+        # Return specific user
+        if request.method == 'GET':
+            user = User.objects.filter(id=id).first()
+            if user:
+                users_logger.debug('user found')
+                user_data = {
+                    'id': user.id,
+                    'email': user.email,
+                    'created_at': user.created_at,
+                    'updated_at': user.updated_at
+                }
+                return Response({'user': user_data}, status=200)
+            else:
+                users_logger.debug('No user found')
+                return Response({'message': 'No user found'}, status=404)
+        
+        # update user
+        if request.method == 'PUT':
+            try:
+                user = user.objects.filter(id=id).first()
+                if user():
+                    user.id = uuid.uuid4(),
+                    user.email = email,
+                    user.password, = password,
+                    user.created_at = user.created_at
+                    user.updated_at = timezone.now()
+                    user.save()
+                    users_logger.debug('user has been updated')
+                    return Response({'message': 'user has been updated'}, status=200)
+                else:
+                    users_logger.debug('No user found')
+                    return Response({'message': 'No user found'}, status=404)
+                
+            except (ValueError, TypeError) as e:
+                users_logger.debug(f'Invalid data received: {e}')
+                return Response({'error': str(e)}, status=400)
+
+        
+        if request.method == 'DELETE':
+            user = user.objects.filter(id=id).first()
+            if user.exists():
+                users_logger.debug(f'user {email} found')
+                user.delete()
+                users_logger.debug(f'user {email} deleted')
+                return Response({'message': f'user {email} deleted'}, status=200)
+            else:
+                users_logger.debug('No users found')
+                return Response({'message': 'No users found'}, status=404)
+            
     except Exception as e:
         users_logger.error('Error occurred: %s', e)
         return Response({'error': str(e)}, status=500)
