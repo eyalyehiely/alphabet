@@ -1,0 +1,264 @@
+DEBUG 2024-08-05 18:38:28,479 functional 27202 8410287104 
+def chain(*args, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 18:38:28,480 functional 27202 8410287104 
+def debug_task(self):
+    return 1
+
+DEBUG 2024-08-05 18:38:28,480 functional 27202 8410287104 
+def xstarmap(task, it):
+    return 1
+
+DEBUG 2024-08-05 18:38:28,480 functional 27202 8410287104 
+def accumulate(self, *args, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 18:38:28,480 functional 27202 8410287104 
+def send_event_reminder():
+    return 1
+
+DEBUG 2024-08-05 18:38:28,480 functional 27202 8410287104 
+def chord(self, header, body, partial_args=0, interval=1, countdown=2, max_retries=3, eager=4, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 18:38:28,480 functional 27202 8410287104 
+def chunks(task, it, n):
+    return 1
+
+DEBUG 2024-08-05 18:38:28,481 functional 27202 8410287104 
+def unlock_chord(self, group_id, callback, interval=0, max_retries=1, result=2, Result=3, GroupResult=4, result_from_tuple=5, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 18:38:28,481 functional 27202 8410287104 
+def group(self, tasks, result, group_id, partial_args, add_to_parent=0):
+    return 1
+
+DEBUG 2024-08-05 18:38:28,481 functional 27202 8410287104 
+def xmap(task, it):
+    return 1
+
+DEBUG 2024-08-05 18:38:28,481 functional 27202 8410287104 
+def backend_cleanup():
+    return 1
+
+DEBUG 2024-08-05 18:39:29,541 functional 27242 8410287104 
+def chain(*args, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 18:39:29,541 functional 27242 8410287104 
+def debug_task(self):
+    return 1
+
+DEBUG 2024-08-05 18:39:29,541 functional 27242 8410287104 
+def xstarmap(task, it):
+    return 1
+
+DEBUG 2024-08-05 18:39:29,541 functional 27242 8410287104 
+def accumulate(self, *args, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 18:39:29,541 functional 27242 8410287104 
+def send_event_reminder():
+    return 1
+
+DEBUG 2024-08-05 18:39:29,542 functional 27242 8410287104 
+def chord(self, header, body, partial_args=0, interval=1, countdown=2, max_retries=3, eager=4, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 18:39:29,542 functional 27242 8410287104 
+def chunks(task, it, n):
+    return 1
+
+DEBUG 2024-08-05 18:39:29,542 functional 27242 8410287104 
+def unlock_chord(self, group_id, callback, interval=0, max_retries=1, result=2, Result=3, GroupResult=4, result_from_tuple=5, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 18:39:29,542 functional 27242 8410287104 
+def group(self, tasks, result, group_id, partial_args, add_to_parent=0):
+    return 1
+
+DEBUG 2024-08-05 18:39:29,542 functional 27242 8410287104 
+def xmap(task, it):
+    return 1
+
+DEBUG 2024-08-05 18:39:29,542 functional 27242 8410287104 
+def backend_cleanup():
+    return 1
+
+DEBUG 2024-08-05 18:56:19,128 functional 27464 8410287104 
+def chain(*args, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 18:56:19,128 functional 27464 8410287104 
+def debug_task(self):
+    return 1
+
+DEBUG 2024-08-05 18:56:19,128 functional 27464 8410287104 
+def xstarmap(task, it):
+    return 1
+
+DEBUG 2024-08-05 18:56:19,128 functional 27464 8410287104 
+def accumulate(self, *args, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 18:56:19,129 functional 27464 8410287104 
+def send_event_reminder():
+    return 1
+
+DEBUG 2024-08-05 18:56:19,129 functional 27464 8410287104 
+def chord(self, header, body, partial_args=0, interval=1, countdown=2, max_retries=3, eager=4, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 18:56:19,129 functional 27464 8410287104 
+def chunks(task, it, n):
+    return 1
+
+DEBUG 2024-08-05 18:56:19,129 functional 27464 8410287104 
+def unlock_chord(self, group_id, callback, interval=0, max_retries=1, result=2, Result=3, GroupResult=4, result_from_tuple=5, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 18:56:19,129 functional 27464 8410287104 
+def group(self, tasks, result, group_id, partial_args, add_to_parent=0):
+    return 1
+
+DEBUG 2024-08-05 18:56:19,129 functional 27464 8410287104 
+def xmap(task, it):
+    return 1
+
+DEBUG 2024-08-05 18:56:19,129 functional 27464 8410287104 
+def backend_cleanup():
+    return 1
+
+DEBUG 2024-08-05 19:01:29,555 functional 27556 8410287104 
+def debug_task(self):
+    return 1
+
+DEBUG 2024-08-05 19:01:29,556 functional 27556 8410287104 
+def chain(*args, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 19:01:29,556 functional 27556 8410287104 
+def xstarmap(task, it):
+    return 1
+
+DEBUG 2024-08-05 19:01:29,556 functional 27556 8410287104 
+def accumulate(self, *args, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 19:01:29,556 functional 27556 8410287104 
+def send_event_reminder():
+    return 1
+
+DEBUG 2024-08-05 19:01:29,556 functional 27556 8410287104 
+def chord(self, header, body, partial_args=0, interval=1, countdown=2, max_retries=3, eager=4, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 19:01:29,556 functional 27556 8410287104 
+def chunks(task, it, n):
+    return 1
+
+DEBUG 2024-08-05 19:01:29,556 functional 27556 8410287104 
+def unlock_chord(self, group_id, callback, interval=0, max_retries=1, result=2, Result=3, GroupResult=4, result_from_tuple=5, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 19:01:29,556 functional 27556 8410287104 
+def group(self, tasks, result, group_id, partial_args, add_to_parent=0):
+    return 1
+
+DEBUG 2024-08-05 19:01:29,557 functional 27556 8410287104 
+def xmap(task, it):
+    return 1
+
+DEBUG 2024-08-05 19:01:29,557 functional 27556 8410287104 
+def backend_cleanup():
+    return 1
+
+DEBUG 2024-08-05 19:01:57,352 functional 27613 8410287104 
+def debug_task(self):
+    return 1
+
+DEBUG 2024-08-05 19:01:57,352 functional 27613 8410287104 
+def chain(*args, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 19:01:57,352 functional 27613 8410287104 
+def xstarmap(task, it):
+    return 1
+
+DEBUG 2024-08-05 19:01:57,352 functional 27613 8410287104 
+def accumulate(self, *args, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 19:01:57,353 functional 27613 8410287104 
+def send_event_reminder():
+    return 1
+
+DEBUG 2024-08-05 19:01:57,353 functional 27613 8410287104 
+def chord(self, header, body, partial_args=0, interval=1, countdown=2, max_retries=3, eager=4, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 19:01:57,353 functional 27613 8410287104 
+def chunks(task, it, n):
+    return 1
+
+DEBUG 2024-08-05 19:01:57,353 functional 27613 8410287104 
+def unlock_chord(self, group_id, callback, interval=0, max_retries=1, result=2, Result=3, GroupResult=4, result_from_tuple=5, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 19:01:57,353 functional 27613 8410287104 
+def group(self, tasks, result, group_id, partial_args, add_to_parent=0):
+    return 1
+
+DEBUG 2024-08-05 19:01:57,353 functional 27613 8410287104 
+def xmap(task, it):
+    return 1
+
+DEBUG 2024-08-05 19:01:57,353 functional 27613 8410287104 
+def backend_cleanup():
+    return 1
+
+DEBUG 2024-08-05 19:08:20,330 functional 27795 8410287104 
+def debug_task(self):
+    return 1
+
+DEBUG 2024-08-05 19:08:20,330 functional 27795 8410287104 
+def chain(*args, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 19:08:20,330 functional 27795 8410287104 
+def xstarmap(task, it):
+    return 1
+
+DEBUG 2024-08-05 19:08:20,330 functional 27795 8410287104 
+def accumulate(self, *args, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 19:08:20,330 functional 27795 8410287104 
+def send_event_reminder():
+    return 1
+
+DEBUG 2024-08-05 19:08:20,330 functional 27795 8410287104 
+def chord(self, header, body, partial_args=0, interval=1, countdown=2, max_retries=3, eager=4, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 19:08:20,331 functional 27795 8410287104 
+def chunks(task, it, n):
+    return 1
+
+DEBUG 2024-08-05 19:08:20,331 functional 27795 8410287104 
+def unlock_chord(self, group_id, callback, interval=0, max_retries=1, result=2, Result=3, GroupResult=4, result_from_tuple=5, **kwargs):
+    return 1
+
+DEBUG 2024-08-05 19:08:20,331 functional 27795 8410287104 
+def group(self, tasks, result, group_id, partial_args, add_to_parent=0):
+    return 1
+
+DEBUG 2024-08-05 19:08:20,331 functional 27795 8410287104 
+def xmap(task, it):
+    return 1
+
+DEBUG 2024-08-05 19:08:20,331 functional 27795 8410287104 
+def backend_cleanup():
+    return 1
+

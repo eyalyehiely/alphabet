@@ -2,18 +2,18 @@ from rest_framework import serializers
 from .models import *
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-class EventSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Event
-        fields = ['id', 'name', 'starting_time', 'end_time', 'location', 'created_at', 'updated_at','participants']
-
-
-
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'password']
+        fields = ['id', 'username', 'email']
+
+class EventSerializer(serializers.ModelSerializer):
+    participants = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True)
+
+    class Meta:
+        model = Event
+        fields = ['id', 'name', 'starting_time', 'end_time', 'location', 'participants', 'created_at', 'updated_at']
 
 
 

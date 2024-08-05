@@ -16,7 +16,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 @api_view(['GET', 'POST'])
-def events(request, name, location, starting_time, end_time,participants ):
+def events(request, name, location, starting_time, end_time, participants ):
     try:
         # Return all events
         if request.method == 'GET':
@@ -47,7 +47,9 @@ def events(request, name, location, starting_time, end_time,participants ):
     except Exception as e:
         events_logger.error('Error occurred: %s', e)
         return Response({'error': str(e)}, status=500)
-    
+
+
+
 
 
 
