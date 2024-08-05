@@ -241,3 +241,31 @@ def user(request,id, email, password):
     except Exception as e:
         users_logger.error('Error occurred: %s', e)
         return Response({'error': str(e)}, status=500)
+    
+
+
+@api_view(['POST'])
+def signup(request,email,password):
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()  
+
+        # Set and hash password
+        user.set_password = password  
+        user.username = email 
+        user.date_joined = timezone.now()
+        user.save() 
+        
+        users_logger.debug(f'user{user.email} created') 
+        users_logger.debug("email to {email} send successfully")
+        refresh = RefreshToken.for_user(user)
+        refresh['username'] = user.mail
+        access = refresh.access_token
+        users_logger.debug(f'{user.email} logged in')
+        return Response({
+            'status': 200,
+            'refresh': str(refresh),
+            'access':str(access)
+        },status=200)
+    users_logger.debug(f'User not created')
+    return Response(serializer.errors, status=400)
