@@ -127,6 +127,7 @@ def event(request, name, location, starting_time, end_time,id, participants):
 def signin(request):
         data = json.loads(request.body)
         username = data.get('username', '')
+        email = data.get('email', '')
         password = data.get('password', '')
 
         users_logger.debug(f'Attempting login for username: {username}')
@@ -137,7 +138,7 @@ def signin(request):
 
 
         # Authenticate user
-        user = authenticate(request,username=username, password=password)
+        user = authenticate(request,username=username, password=password,email=email)
         if user is not None:
             auth_login(request, user)
             refresh = RefreshToken.for_user(user)
@@ -155,7 +156,7 @@ def signin(request):
 
 
 @api_view(['GET', 'POST'])
-def users(request,email,password):
+def users(request,email,password,username):
     try:
         # Return all users
         if request.method == 'GET':
@@ -172,6 +173,7 @@ def users(request,email,password):
         if request.method == 'POST':
             new_user = User.objects.create(
                 id = uuid.uuid4(),
+                username=username,
                 email = email,
                 password = password,
                 created_at = timezone.now(),
