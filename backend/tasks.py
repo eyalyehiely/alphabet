@@ -38,7 +38,7 @@ def send_event_reminder():
                 from_email = settings.EMAIL_HOST_USER
                 recipient_email = participant.email
                 subject = 'Event Reminder'
-                body = f'Reminder: Your event "{event.name}" is starting in 30 minutes.'
+                body = f'Reminder: Your event "{event.name}" is starting in 30 minutes.\n location: {event.location}\n participants: {event.participants.all()}\n'
 
                 # Create the email
                 msg = MIMEMultipart()
