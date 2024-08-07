@@ -16,6 +16,7 @@ users_logger =logging.getLogger('users')
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
+@ratelimit(key='events', rate='10/m', method=['GET', 'POST'], block=True)
 @api_view(['GET', 'POST'])
 def events(request, name, location, starting_time, end_time, participants ):
     try:
@@ -54,7 +55,7 @@ def events(request, name, location, starting_time, end_time, participants ):
 
 
 
-
+@ratelimit(key='event', rate='10/m', method=['GET','PUT','DELETE'], block=True)
 @api_view(['GET','PUT','DELETE'])
 def event(request, name, location, starting_time, end_time,id, participants):
     try:
