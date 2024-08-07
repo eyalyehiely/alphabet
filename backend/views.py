@@ -19,9 +19,10 @@ users_logger =logging.getLogger('users')
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
-@ratelimit(key='events', rate='10/m', method=['GET', 'POST'], block=True)
+
+@ratelimit(key='user', rate='10/m', method=['GET', 'POST'], block=True)
 @api_view(['GET', 'POST'])
-def events(request, name, location, starting_time, end_time, participants ):
+def events(request):
     try:
         # Return all events
         if request.method == 'GET':
@@ -36,17 +37,27 @@ def events(request, name, location, starting_time, end_time, participants ):
         
         # Create a new event
         if request.method == 'POST':
+            data = request.data
             new_event = Event.objects.create(
                 id=uuid.uuid4(),
-                name= name,
-                participants = participants,
-                starting_time = starting_time,
-                end_time = end_time,
-                location = location,
-                created_at = timezone.now(),
-                updated_at = timezone.now()
+                name=data['name'],
+                starting_time=data['starting_time'],
+                end_time=data['end_time'],
+                location=data['location'],
+                created_at=timezone.now(),
+                updated_at=timezone.now()
             )
+            if 'participants' in data:
+                for participant_id in data['participants']:
+                    new_event.participants.add(participant_id.username)
             new_event.save()
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+            f'event_{event.id}',
+            {
+            'type': 'event_message',
+            'message': f'Event "{event.name}" has been created.'
+            })
             events_logger.debug('New event saved')
             return Response({'message': 'Event created successfully'}, status=201)
     except Exception as e:
@@ -58,9 +69,9 @@ def events(request, name, location, starting_time, end_time, participants ):
 
 
 
-@ratelimit(key='event', rate='10/m', method=['GET','PUT','DELETE'], block=True)
-@api_view(['GET','PUT','DELETE'])
-def event(request, name, location, starting_time, end_time,id, participants):
+@ratelimit(key='user', rate='10/m', method=['GET', 'PUT', 'DELETE'], block=True)
+@api_view(['GET', 'PUT', 'DELETE'])
+def event(request,id):
     try:
         # Return specific event
         if request.method == 'GET':
@@ -73,7 +84,7 @@ def event(request, name, location, starting_time, end_time,id, participants):
                     'starting_time': event.starting_time,
                     'end_time': event.end_time,
                     'location': event.location,
-                    'participants': [user.id for user in event.participants.all()],
+                    'participants': [user.username for user in event.participants.all()],
                     'created_at': event.created_at,
                     'updated_at': event.updated_at
                 }
@@ -81,57 +92,64 @@ def event(request, name, location, starting_time, end_time,id, participants):
             else:
                 events_logger.debug('No event found')
                 return Response({'message': 'No event found'}, status=404)
-        
-        # update event
-        if request.method == 'PUT':
-            try:
-                event = Event.objects.filter(id=id).first()
-                if event():
-                    event.id = uuid.uuid4(),
-                    event.name = name,
-                    event.starting_time = starting_time,
-                    event.end_time = end_time,
-                    event.location = location,
-                    event.participants = participants
-                    if participants:
-                        event.participants.clear()
-                        for participant_id in participants:
-                            event.participants.add(participant_id)
-                    event.created_at = event.created_at
-                    event.updated_at = timezone.now()
-                    event.save()
-                    events_logger.debug('Event has been updated')
-                    channel_layer = get_channel_layer()
-                    async_to_sync(channel_layer.group_send)(
+
+        # Update event
+        elif request.method == 'PUT':
+            event = Event.objects.filter(id=id).first()
+            if event and event.starting_time > timezone.now():
+                data = request.data
+                event.name = data.get('name', event.name)
+                event.starting_time = data.get('starting_time', event.starting_time)
+                event.end_time = data.get('end_time', event.end_time)
+                event.location = data.get('location', event.location)
+                event.updated_at = timezone.now()
+
+                if 'participants' in data:
+                    event.participants.clear()
+                    for participant_id in data['participants']:
+                        event.participants.add(participant_id)
+
+                event.save()
+                events_logger.debug('Event has been updated')
+
+                channel_layer = get_channel_layer()
+                async_to_sync(channel_layer.group_send)(
                     f'event_{event.id}',
                     {
-                    'type': 'event_message',
-                    'message': f'Event "{event.name}" has been updated.'
+                        'type': 'event_message',
+                        'message': f'Event "{event.name}" has been updated.'
                     }
-                    )
-                    return Response({'message': 'Event has been updated'}, status=200)
-                else:
-                    events_logger.debug('No event found')
-                    return Response({'message': 'No event found'}, status=404)
-                
-            except (ValueError, TypeError) as e:
-                events_logger.debug(f'Invalid data received: {e}')
-                return Response({'error': str(e)}, status=400)
+                )
+                return Response({'message': 'Event has been updated'}, status=200)
+            else:
+                events_logger.debug('No event found or event is in the past')
+                return Response({'message': 'No event found or event is in the past'}, status=404)
 
-        
-        if request.method == 'DELETE':
+        # Delete event
+        elif request.method == 'DELETE':
             event = Event.objects.filter(id=id).first()
-            if event.exists():
+            if event:
                 events_logger.debug('Event found')
                 event.delete()
+                channel_layer = get_channel_layer()
+                async_to_sync(channel_layer.group_send)(
+                    f'event_{event.id}',
+                    {
+                        'type': 'event_message',
+                        'message': f'Event "{event.name}" has been deleted.'
+                    }
+                )
                 events_logger.debug(f'Event {event.name} deleted')
                 return Response({'message': f'Event {event.name} deleted'}, status=200)
             else:
                 events_logger.debug('No events found')
                 return Response({'message': 'No events found'}, status=404)
-            
+                
+    except (ValueError, TypeError) as e:
+        events_logger.debug(f'Invalid data received: {e}')
+        return Response({'error': str(e)}, status=400)
     except Exception as e:
-        events_logger.error('Error occurred: %s', e)
+        events_logger.error(f'Error occurred: {e}')
         return Response({'error': str(e)}, status=500)
 
 

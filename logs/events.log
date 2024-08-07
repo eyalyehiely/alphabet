@@ -1,0 +1,6 @@
+DEBUG 2024-08-07 16:02:58,388 views 8727 6162329600 New event saved
+DEBUG 2024-08-07 16:04:14,354 views 8757 6158577664 Events found
+DEBUG 2024-08-07 16:06:59,241 views 8853 6135869440 Events found
+DEBUG 2024-08-07 16:10:46,947 views 8951 6159626240 Events found
+DEBUG 2024-08-07 16:21:16,247 views 9449 6134837248 Event found
+ERROR 2024-08-07 16:23:04,933 views 9497 6157250560 Error occurred: 'int' object has no attribute 'username'
