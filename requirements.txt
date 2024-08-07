@@ -3,6 +3,8 @@ asgiref==3.8.1
 billiard==4.2.0
 celery==5.4.0
 certifi==2024.7.4
+channels==4.1.0
+channels-redis==4.2.0
 click==8.1.7
 click-didyoumean==0.3.1
 click-plugins==1.1.1
@@ -15,6 +17,7 @@ djangorestframework-simplejwt==5.3.1
 drf-yasg==1.21.7
 inflection==0.5.1
 kombu==5.3.7
+msgpack==1.0.8
 packaging==24.1
 prompt_toolkit==3.0.47
 PyJWT==2.9.0
