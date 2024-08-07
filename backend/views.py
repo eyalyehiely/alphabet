@@ -8,8 +8,11 @@ from django.utils import timezone
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django_ratelimit.decorators import ratelimit
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
-# Configure the logger
+
+
 events_logger = logging.getLogger('events')
 users_logger =logging.getLogger('users')
 
@@ -98,6 +101,14 @@ def event(request, name, location, starting_time, end_time,id, participants):
                     event.updated_at = timezone.now()
                     event.save()
                     events_logger.debug('Event has been updated')
+                    channel_layer = get_channel_layer()
+                    async_to_sync(channel_layer.group_send)(
+                    f'event_{event.id}',
+                    {
+                    'type': 'event_message',
+                    'message': f'Event "{event.name}" has been updated.'
+                    }
+                    )
                     return Response({'message': 'Event has been updated'}, status=200)
                 else:
                     events_logger.debug('No event found')
@@ -123,6 +134,15 @@ def event(request, name, location, starting_time, end_time,id, participants):
         events_logger.error('Error occurred: %s', e)
         return Response({'error': str(e)}, status=500)
 
+
+
+
+@api_view(['GET'])
+@ratelimit(key='user', rate='10/m', method=['GET'], block=True)
+def event_search(request, location):
+    location = location
+    events = Event.objects.filter(location__icontains=location)
+    return Response(events)
 
 # --------------------------------------------------users----------------------------------------------------------------------------------------------------
 @api_view(['POST'])
