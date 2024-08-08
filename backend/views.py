@@ -1,5 +1,6 @@
 import uuid,logging,json
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import *
 from .serializers import *
@@ -21,6 +22,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 
 @ratelimit(key='user', rate='10/m', method=['GET', 'POST'], block=True)
+@permission_classes([IsAuthenticated])
 @api_view(['GET', 'POST'])
 def events(request):
     try:
@@ -70,6 +72,7 @@ def events(request):
 
 
 @ratelimit(key='user', rate='10/m', method=['GET', 'PUT', 'DELETE'], block=True)
+@permission_classes([IsAuthenticated])
 @api_view(['GET', 'PUT', 'DELETE'])
 def event(request,id):
     try:
@@ -161,6 +164,7 @@ def event(request,id):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 @ratelimit(key='user', rate='10/m', method=['GET'], block=True)
 def event_search(request, location):
     location = location
@@ -284,27 +288,31 @@ def user_detail(request, user_id):
 
 
 @api_view(['POST'])
-def signup(request,email,password):
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
-        user = serializer.save()  
+def signup(request):
+    data = request.data
+    email = data.get('email')
+    password = data.get('password')
+    username = data.get('username')
 
-        # Set and hash password
-        user.set_password = password  
-        user.username = email 
-        user.date_joined = timezone.now()
-        user.save() 
-        
-        users_logger.debug(f'user{user.email} created') 
-        users_logger.debug("email to {email} send successfully")
+    if not email or not password or not username:
+        return Response({'error': 'Email, password, and username are required'}, status=400)
+
+    serializer = UserSerializer(data=data)
+    if serializer.is_valid():
+        user = serializer.save()
+        user.set_password(password)  
+        user.save()
+
+        users_logger.debug(f'user {user.username} created')
         refresh = RefreshToken.for_user(user)
-        refresh['username'] = user.mail
+        refresh['username'] = user.username
         access = refresh.access_token
-        users_logger.debug(f'{user.email} logged in')
+        users_logger.debug(f'{user.username} logged in')
         return Response({
             'status': 200,
             'refresh': str(refresh),
-            'access':str(access)
-        },status=200)
-    users_logger.debug(f'User not created')
+            'access': str(access)
+        }, status=200)
+
+    users_logger.debug('User not created')
     return Response(serializer.errors, status=400)
