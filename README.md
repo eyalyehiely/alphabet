@@ -1,4 +1,4 @@
-# AlfaBet Backend Exercise - Events
+# AlphaBet Backend Exercise - Events
 
 
 ## Introduction
