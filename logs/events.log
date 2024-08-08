@@ -1,20 +1,16 @@
-DEBUG 2024-08-07 16:02:58,388 views 8727 6162329600 New event saved
-DEBUG 2024-08-07 16:04:14,354 views 8757 6158577664 Events found
-DEBUG 2024-08-07 16:06:59,241 views 8853 6135869440 Events found
-DEBUG 2024-08-07 16:10:46,947 views 8951 6159626240 Events found
-DEBUG 2024-08-07 16:21:16,247 views 9449 6134837248 Event found
-ERROR 2024-08-07 16:23:04,933 views 9497 6157250560 Error occurred: 'int' object has no attribute 'username'
-DEBUG 2024-08-07 16:41:23,946 views 9716 6197407744 Event found
-DEBUG 2024-08-07 16:41:27,442 views 9716 6197407744 Event Sample Event deleted
-DEBUG 2024-08-07 17:54:30,101 views 11792 6201749504 No event found or event is in the past
-DEBUG 2024-08-07 17:55:00,254 views 11792 6201749504 No event found or event is in the past
-DEBUG 2024-08-07 17:55:34,309 views 11792 6201749504 No event found or event is in the past
-DEBUG 2024-08-07 17:56:30,964 views 11792 6201749504 No event found or event is in the past
-DEBUG 2024-08-07 17:57:00,353 views 11792 6201749504 No event found or event is in the past
-DEBUG 2024-08-07 17:57:36,179 views 11792 6201749504 No event found or event is in the past
-DEBUG 2024-08-07 17:58:45,159 views 11902 6112505856 Event found: Meeting with eyal, starting_time: 2024-08-05 18:30:12+00:00, current_time: 2024-08-07 14:58:45.159467+00:00
-DEBUG 2024-08-07 17:58:45,159 views 11902 6112505856 Event is in the past: 2024-08-05 18:30:12+00:00 <= 2024-08-07 14:58:45.159625+00:00
-DEBUG 2024-08-07 17:59:03,684 views 11902 6112505856 Event found: Meeting with eyal, starting_time: 2024-08-05 18:30:12+00:00, current_time: 2024-08-07 14:59:03.684793+00:00
-DEBUG 2024-08-07 17:59:03,685 views 11902 6112505856 Event is in the past: 2024-08-05 18:30:12+00:00 <= 2024-08-07 14:59:03.685021+00:00
-DEBUG 2024-08-07 17:59:43,368 views 11902 6112505856 Event found: Meeting with eyal, starting_time: 2024-08-07 18:30:12+00:00, current_time: 2024-08-07 14:59:43.367991+00:00
-DEBUG 2024-08-07 17:59:46,542 views 11902 6112505856 Event has been updated
+ERROR 2024-08-08 15:34:42,221 views 18841 6118223872 Error occurred: 'int' object has no attribute 'username'
+ERROR 2024-08-08 15:35:51,533 views 18841 6118223872 Error occurred: 'str' object has no attribute 'username'
+ERROR 2024-08-08 15:38:03,283 views 18841 6118223872 Error occurred: 'str' object has no attribute 'username'
+ERROR 2024-08-08 15:38:12,779 views 18841 6118223872 Error occurred: 'int' object has no attribute 'username'
+DEBUG 2024-08-08 17:21:47,695 views 20743 6175158272 Events found
+DEBUG 2024-08-08 17:22:15,790 views 20743 6175158272 Event found
+DEBUG 2024-08-08 17:42:03,789 views 21310 6114488320 Events found
+DEBUG 2024-08-08 17:42:24,919 views 21310 6114488320 Event found
+DEBUG 2024-08-08 17:43:21,550 views 21310 6114488320 Event found
+DEBUG 2024-08-08 17:43:34,839 views 21310 6114488320 Event found: s Event, starting_time: 2023-08-01 10:00:00+00:00, current_time: 2024-08-08 14:43:34.839563+00:00
+DEBUG 2024-08-08 17:43:34,839 views 21310 6114488320 Event is in the past: 2023-08-01 10:00:00+00:00 <= 2024-08-08 14:43:34.839871+00:00
+DEBUG 2024-08-08 17:44:21,898 views 21310 6114488320 Event found: s Event, starting_time: 2024-08-08 17:00:00+00:00, current_time: 2024-08-08 14:44:21.898407+00:00
+DEBUG 2024-08-08 17:44:25,809 views 21310 6114488320 Event has been updated
+DEBUG 2024-08-08 17:45:06,165 views 21310 6114488320 Event found
+DEBUG 2024-08-08 17:45:09,500 views 21310 6114488320 Event s Event deleted
+DEBUG 2024-08-08 17:47:09,295 views 21310 6114488320 New event saved
