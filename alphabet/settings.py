@@ -230,6 +230,14 @@ LOGGING = {
             'when': 'midnight',
             'backupCount': 7,
         },
+        'socket_file': {
+            'level': 'DEBUG' if DEBUG else 'INFO',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs/celery.log'),
+            'formatter': 'simpleRe',
+            'when': 'midnight',
+            'backupCount': 7,
+        },
         'console': {
             'level': 'DEBUG' if DEBUG else 'INFO',
             'class': 'logging.StreamHandler',
@@ -252,5 +260,10 @@ LOGGING = {
             'level': 'DEBUG' if DEBUG else 'INFO',
             'propagate': True,
         },
+        'socket': {
+            'handlers': ['socket_file', 'console'],
+            'level': 'DEBUG' if DEBUG else 'INFO',
+            'propagate': True,
     },
+}
 }
