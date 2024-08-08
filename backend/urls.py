@@ -1,9 +1,10 @@
 from django.urls import path
 from .views import *
 from rest_framework_simplejwt.views import TokenRefreshView
+
 urlpatterns = [
-    path('events/', events, name='event_list'),
-    path('event/<uuid:id>/', event, name='event_detail'),
+    path('events/', events, name='events'),  # Changed name to 'events'
+    path('event/<uuid:id>/', event, name='event'),  # Changed name to 'event'
     path('auth/signin/', signin, name='signin'),
     path('auth/signup/', signup, name='signup'),
     path('user/<int:user_id>/', user_detail, name='user_detail'), 
