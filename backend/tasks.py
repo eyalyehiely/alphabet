@@ -63,3 +63,48 @@ def send_event_reminder():
             except Exception as e:
                 celery_logger.error(f'Failed to send reminder email to {participant.email} for event {event.name}: {e}')
     celery_logger.debug('Task send_event_reminder finished')
+
+
+
+
+
+@shared_task
+def send_update_email(event_id, participants, action):
+    try:
+        event = Event.objects.get(id=event_id)
+        celery_logger.debug(f'Sending emails for event: {event.name}, action: {action}')
+        
+        context = ssl.create_default_context(cafile=certifi.where())
+        
+        for recipient_email in participants:
+            try:
+                from_email = settings.EMAIL_HOST_USER
+                subject = f'Notification for Event {event.name} - {action.capitalize()}'
+                body = (
+                    f'This is a notification that the event "{event.name}" has been {action}.\n'
+                    f'Location: {event.location}\n'
+                    f'Starting Time: {event.starting_time}\n'
+                    f'End Time: {event.end_time}\n'
+                )
+
+                # Create the email
+                msg = MIMEMultipart()
+                msg['From'] = from_email
+                msg['To'] = recipient_email
+                msg['Subject'] = subject
+                msg.attach(MIMEText(body, 'plain'))
+
+                # Convert the message to a string
+                message = msg.as_string()
+
+                with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+                    server.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+                    server.sendmail(from_email, recipient_email, message)
+                
+                celery_logger.debug(f'Email sent to {recipient_email} for event {event.name}')
+            except Exception as e:
+                celery_logger.error(f'Failed to send email to {recipient_email} for event {event.name}: {e}')
+    except Event.DoesNotExist:
+        celery_logger.error(f'Event with ID {event_id} does not exist')
+    except Exception as e:
+        celery_logger.error(f'Error occurred while sending emails for event {event_id}: {e}')
