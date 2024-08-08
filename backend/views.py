@@ -11,6 +11,10 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django_ratelimit.decorators import ratelimit
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from .tasks import send_update_email
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import status
+
 
 
 
@@ -36,7 +40,7 @@ def events(request):
             else:
                 events_logger.debug('No events found')
                 return Response({'message': 'No events found'}, status=404)
-        
+
         # Create a new event
         if request.method == 'POST':
             data = request.data
@@ -49,10 +53,18 @@ def events(request):
                 created_at=timezone.now(),
                 updated_at=timezone.now()
             )
+            participants = []
             if 'participants' in data:
-                for participant_id in data['participants']:
-                    new_event.participants.add(participant_id.username)
+                for username in data['participants']:
+                    try:
+                        participant = User.objects.get(username=username)
+                        new_event.participants.add(participant)
+                        participants.append(participant.email)
+                    except User.DoesNotExist:
+                        events_logger.warning(f'User {username} does not exist')
+
             new_event.save()
+            send_update_email.delay(new_event.id, participants, 'created')
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
             f'event_{event.id}',
@@ -74,7 +86,7 @@ def events(request):
 @ratelimit(key='user', rate='10/m', method=['GET', 'PUT', 'DELETE'], block=True)
 @permission_classes([IsAuthenticated])
 @api_view(['GET', 'PUT', 'DELETE'])
-def event(request,id):
+def event(request, id):
     try:
         # Return specific event
         if request.method == 'GET':
@@ -97,7 +109,7 @@ def event(request,id):
                 return Response({'message': 'No event found'}, status=404)
 
         # Update event
-        if request.method == 'PUT':
+        elif request.method == 'PUT':
             event = Event.objects.filter(id=id).first()
             if event:
                 events_logger.debug(f'Event found: {event.name}, starting_time: {event.starting_time}, current_time: {timezone.now()}')
@@ -109,12 +121,19 @@ def event(request,id):
                     event.location = data.get('location', event.location)
                     event.updated_at = timezone.now()
 
+                    participants = []
                     if 'participants' in data:
                         event.participants.clear()
-                        for participant_id in data['participants']:
-                            event.participants.add(participant_id)
+                        for username in data['participants']:
+                            try:
+                                participant = User.objects.get(username=username)
+                                event.participants.add(participant)
+                                participants.append(participant.email)
+                            except User.DoesNotExist:
+                                events_logger.warning(f'User {username} does not exist')
 
                     event.save()
+                    send_update_email.delay(event.id, participants, 'updated')
                     events_logger.debug('Event has been updated')
 
                     channel_layer = get_channel_layer()
@@ -137,8 +156,10 @@ def event(request,id):
         elif request.method == 'DELETE':
             event = Event.objects.filter(id=id).first()
             if event:
+                participants = [participant.email for participant in event.participants.all()]
                 events_logger.debug('Event found')
                 event.delete()
+                send_update_email.delay(event.id, participants, 'deleted')
                 channel_layer = get_channel_layer()
                 async_to_sync(channel_layer.group_send)(
                     f'event_{event.id}',
@@ -166,17 +187,16 @@ def event(request,id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 @ratelimit(key='user', rate='10/m', method=['GET'], block=True)
-def event_search(request, location):
-    location = location
+def search_event(request, location):
     events = Event.objects.filter(location__icontains=location)
-    return Response(events)
-
+    serializer = EventSerializer(events, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 # --------------------------------------------------users----------------------------------------------------------------------------------------------------
+@csrf_exempt
 @api_view(['POST'])
 def signin(request):
         data = json.loads(request.body)
         username = data.get('username', '')
-        email = data.get('email', '')
         password = data.get('password', '')
 
         users_logger.debug(f'Attempting login for username: {username}')
@@ -187,7 +207,7 @@ def signin(request):
 
 
         # Authenticate user
-        user = authenticate(request,username=username, password=password,email=email)
+        user = authenticate(request,username=username, password=password)
         if user is not None:
             auth_login(request, user)
             refresh = RefreshToken.for_user(user)
@@ -204,91 +224,9 @@ def signin(request):
             return Response({'status': 'error', 'message': 'Invalid username or password'}, status=401)
 
 
-@api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
-def users(request):
-    try:
-        # Return all users
-        if request.method == 'GET':
-            users = User.objects.all()
-            if users.exists():
-                users_logger.debug('users found')
-                users_list = UserSerializer(users, many=True).data
-                return Response({'users': users_list}, status=200)
-            else:
-                users_logger.debug('No users found')
-                return Response({'message': 'No users found'}, status=404)
-        
-        # Create a new User
-        if request.method == 'POST':
-            data = request.data  
-            new_user = User.objects.create(
-                username = data.get('username'),
-                email = data.get('email'),
-                password = data.get('password'),
-            )
-            new_user.save()
-            users_logger.debug('New User saved')
-            return Response({'message': 'User created successfully'}, status=201)
-    except Exception as e:
-        users_logger.error('Error occurred: %s', e)
-        return Response({'error': str(e)}, status=500)
-    
 
 
-
-
-
-@api_view(['GET', 'PUT', 'DELETE'])
-@permission_classes([IsAuthenticated])
-def user_detail(request, user_id):
-    try:
-        # Retrieve specific user by ID
-        if request.method == 'GET':
-            user = User.objects.filter(id=user_id).first()
-            if user:
-                users_logger.debug('User found')
-                user_data = {
-                    'id': user.id,
-                    'username': user.username,
-                    'email': user.email,
-                    'created_at': user.date_joined,  # Use date_joined for created_at
-                    'updated_at': user.last_login  # Use last_login for updated_at
-                }
-                return Response({'user': user_data}, status=200)
-            else:
-                users_logger.debug('No user found')
-                return Response({'message': 'No user found'}, status=404)
-        
-        # Update specific user by ID
-        elif request.method == 'PUT':
-            data = request.data
-            user = User.objects.filter(id=user_id).first()
-            if user:
-                user.email = data.get('email', user.email)
-                user.save()
-                users_logger.debug('User updated')
-                return Response({'message': 'User updated successfully'}, status=200)
-            else:
-                users_logger.debug('No user found')
-                return Response({'message': 'No user found'}, status=404)
-        
-        # Delete specific user by ID
-        elif request.method == 'DELETE':
-            user = User.objects.filter(id=user_id).first()
-            if user:
-                user.delete()
-                users_logger.debug('User deleted')
-                return Response({'message': 'User deleted successfully'}, status=200)
-            else:
-                users_logger.debug('No user found')
-                return Response({'message': 'No user found'}, status=404)
-
-    except Exception as e:
-        users_logger.error('Error occurred: %s', e)
-        return Response({'error': str(e)}, status=500)
-
-
+@csrf_exempt
 @api_view(['POST'])
 def signup(request):
     data = request.data
@@ -318,3 +256,62 @@ def signup(request):
 
     users_logger.debug('User not created')
     return Response(serializer.errors, status=400)
+
+
+
+
+
+        
+
+@api_view(['GET', 'PUT', 'DELETE'])
+@csrf_exempt
+@permission_classes([IsAuthenticated])
+def user_detail(request, user_id):
+    try:
+        # Retrieve specific user by ID
+        if request.method == 'GET':
+            user = User.objects.filter(id=user_id).first()
+            if user:
+                users_logger.debug('User found')
+                user_data = {
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                    'created_at': user.date_joined,  # Use date_joined for created_at
+                    'updated_at': user.last_login  # Use last_login for updated_at
+                }
+                return Response({'user': user_data}, status=200)
+            else:
+                users_logger.debug('No user found')
+                return Response({'message': 'No user found'}, status=404)
+        
+        # Update specific user by ID
+        elif request.method == 'PUT':
+            data = request.data
+            user = User.objects.filter(id=user_id).first()
+            if user:
+                user.email = data.get('email', user.email)
+                user.username = data.get('username', user.username)
+                user.save()
+                users_logger.debug('User updated')
+                return Response({'message': 'User updated successfully'}, status=200)
+            else:
+                users_logger.debug('No user found')
+                return Response({'message': 'No user found'}, status=404)
+        
+        # Delete specific user by ID
+        elif request.method == 'DELETE':
+            user = User.objects.filter(id=user_id).first()
+            if user:
+                user.delete()
+                users_logger.debug('User deleted')
+                return Response({'message': 'User deleted successfully'}, status=200)
+            else:
+                users_logger.debug('No user found')
+                return Response({'message': 'No user found'}, status=404)
+
+    except Exception as e:
+        users_logger.error('Error occurred: %s', e)
+        return Response({'error': str(e)}, status=500)
+
+
