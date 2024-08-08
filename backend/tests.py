@@ -72,13 +72,6 @@ class EventTestCase(TestCase):
 
 
 
-# tests.py
-from django.test import TestCase, Client
-from django.urls import reverse
-from django.contrib.auth.models import User
-from rest_framework import status
-import json
-
 class UserTestCase(TestCase):
     def setUp(self):
         self.client = Client()
