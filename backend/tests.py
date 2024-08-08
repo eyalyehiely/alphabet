@@ -1,9 +1,13 @@
 # events/tests.py
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.utils import timezone
 from .models import Event
 from datetime import datetime
-import pytz
+import pytz,json
+from django.urls import reverse
+from django.contrib.auth.models import User
+from rest_framework import status
+
 
 class EventTestCase(TestCase):
     def setUp(self):
@@ -63,3 +67,77 @@ class EventTestCase(TestCase):
 
         with self.assertRaises(Event.DoesNotExist):
             Event.objects.get(name='Event 1')
+
+
+
+
+
+# tests.py
+from django.test import TestCase, Client
+from django.urls import reverse
+from django.contrib.auth.models import User
+from rest_framework import status
+import json
+
+class UserTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='testuser', email='testuser@example.com', password='testpassword')
+        
+        self.signin_url = reverse('signin')
+        self.signup_url = reverse('signup')
+        self.users_url = reverse('users_list')
+        self.user_detail_url = reverse('user_detail', args=[self.user.id])
+
+    def test_signin(self):
+        data = {
+            'username': 'testuser',
+            'email': 'testuser@example.com',
+            'password': 'testpassword'
+        }
+        response = self.client.post(self.signin_url, data=json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('access', response.data)
+        self.assertIn('refresh', response.data)
+
+    def test_signup(self):
+        data = {
+            'username': 'signupuser',
+            'email': 'signupuser@example.com',
+            'password': 'signuppassword'
+        }
+        response = self.client.post(self.signup_url, data=json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(User.objects.filter(username='signupuser').exists())
+
+    def test_get_users(self):
+        response = self.client.get(self.users_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['users']), 1)
+
+    def test_create_user(self):
+        data = {
+            'username': 'newuser',
+            'email': 'newuser@example.com',
+            'password': 'newpassword'
+        }
+        response = self.client.post(self.users_url, data=json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(User.objects.filter(username='newuser').exists())
+
+    def test_get_user_detail(self):
+        response = self.client.get(self.user_detail_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['user']['username'], 'testuser')
+
+    def test_update_user_detail(self):
+        data = {'email': 'updatedemail@example.com'}
+        response = self.client.put(self.user_detail_url, data=json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.email, 'updatedemail@example.com')
+
+    def test_delete_user(self):
+        response = self.client.delete(self.user_detail_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(User.objects.filter(id=self.user.id).exists())
