@@ -22,11 +22,11 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="AlfaBet API",
+        title="alphaBet API",
         default_version='v1',
-        description="API documentation for AlfaBet Backend Exercise",
+        description="API documentation for alphaBet Backend Exercise",
         terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="contact@alfabet.local"),
+        contact=openapi.Contact(email="contact@alphabet.local"),
         license=openapi.License(name="BSD License"),
     ),
     public=True,
