@@ -1,0 +1,12 @@
+ERROR 2024-08-08 13:58:08,011 views 16344 6123188224 Error occurred: User() got unexpected keyword arguments: 'created_at', 'updated_at'
+ERROR 2024-08-08 14:01:55,093 views 16726 6157709312 Error occurred: Python int too large to convert to SQLite INTEGER
+ERROR 2024-08-08 14:02:18,405 views 16762 6205501440 Error occurred: User() got unexpected keyword arguments: 'created_at', 'updated_at'
+ERROR 2024-08-08 14:05:43,379 views 16794 6164082688 Error occurred: Python int too large to convert to SQLite INTEGER
+DEBUG 2024-08-08 14:06:32,633 views 16819 6130200576 New User saved
+DEBUG 2024-08-08 14:07:15,701 views 16819 6130200576 users found
+DEBUG 2024-08-08 14:19:19,701 views 17210 6122139648 User found
+DEBUG 2024-08-08 14:19:36,414 views 17210 6122139648 User found
+DEBUG 2024-08-08 14:25:02,997 views 17210 6122139648 Attempting login for username: inbar.shafir@gmail.com
+DEBUG 2024-08-08 14:25:02,999 views 17210 6122139648 No user found
+DEBUG 2024-08-08 14:25:51,766 views 17210 6122139648 Attempting login for username: inbarshafir
+DEBUG 2024-08-08 14:25:51,981 views 17210 6122139648 inbarshafir logged in

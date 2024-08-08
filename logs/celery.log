@@ -1,88 +1,44 @@
-DEBUG 2024-08-07 13:00:31,556 functional 4075 8716307456 
-def debug_task(self):
-    return 1
-
-DEBUG 2024-08-07 13:00:31,557 functional 4075 8716307456 
-def chain(*args, **kwargs):
-    return 1
-
-DEBUG 2024-08-07 13:00:31,557 functional 4075 8716307456 
-def xstarmap(task, it):
-    return 1
-
-DEBUG 2024-08-07 13:00:31,558 functional 4075 8716307456 
-def accumulate(self, *args, **kwargs):
-    return 1
-
-DEBUG 2024-08-07 13:00:31,558 functional 4075 8716307456 
-def chord(self, header, body, partial_args=0, interval=1, countdown=2, max_retries=3, eager=4, **kwargs):
-    return 1
-
-DEBUG 2024-08-07 13:00:31,558 functional 4075 8716307456 
-def send_event_reminder():
-    return 1
-
-DEBUG 2024-08-07 13:00:31,559 functional 4075 8716307456 
-def chunks(task, it, n):
-    return 1
-
-DEBUG 2024-08-07 13:00:31,559 functional 4075 8716307456 
-def unlock_chord(self, group_id, callback, interval=0, max_retries=1, result=2, Result=3, GroupResult=4, result_from_tuple=5, **kwargs):
-    return 1
-
-DEBUG 2024-08-07 13:00:31,559 functional 4075 8716307456 
-def group(self, tasks, result, group_id, partial_args, add_to_parent=0):
-    return 1
-
-DEBUG 2024-08-07 13:00:31,559 functional 4075 8716307456 
-def xmap(task, it):
-    return 1
-
-DEBUG 2024-08-07 13:00:31,560 functional 4075 8716307456 
+DEBUG 2024-08-08 13:58:03,975 functional 16395 8716307456 
 def backend_cleanup():
     return 1
 
-DEBUG 2024-08-07 13:00:36,646 functional 4096 8716307456 
+DEBUG 2024-08-08 13:58:03,976 functional 16395 8716307456 
 def debug_task(self):
     return 1
 
-DEBUG 2024-08-07 13:00:36,646 functional 4096 8716307456 
+DEBUG 2024-08-08 13:58:03,976 functional 16395 8716307456 
 def send_event_reminder():
     return 1
 
-DEBUG 2024-08-07 13:00:36,646 functional 4096 8716307456 
+DEBUG 2024-08-08 13:58:03,976 functional 16395 8716307456 
 def chain(*args, **kwargs):
     return 1
 
-DEBUG 2024-08-07 13:00:36,647 functional 4096 8716307456 
+DEBUG 2024-08-08 13:58:03,976 functional 16395 8716307456 
 def xstarmap(task, it):
     return 1
 
-DEBUG 2024-08-07 13:00:36,647 functional 4096 8716307456 
+DEBUG 2024-08-08 13:58:03,976 functional 16395 8716307456 
 def accumulate(self, *args, **kwargs):
     return 1
 
-DEBUG 2024-08-07 13:00:36,647 functional 4096 8716307456 
+DEBUG 2024-08-08 13:58:03,976 functional 16395 8716307456 
 def chord(self, header, body, partial_args=0, interval=1, countdown=2, max_retries=3, eager=4, **kwargs):
     return 1
 
-DEBUG 2024-08-07 13:00:36,647 functional 4096 8716307456 
+DEBUG 2024-08-08 13:58:03,977 functional 16395 8716307456 
 def chunks(task, it, n):
     return 1
 
-DEBUG 2024-08-07 13:00:36,647 functional 4096 8716307456 
+DEBUG 2024-08-08 13:58:03,977 functional 16395 8716307456 
 def unlock_chord(self, group_id, callback, interval=0, max_retries=1, result=2, Result=3, GroupResult=4, result_from_tuple=5, **kwargs):
     return 1
 
-DEBUG 2024-08-07 13:00:36,648 functional 4096 8716307456 
+DEBUG 2024-08-08 13:58:03,977 functional 16395 8716307456 
 def group(self, tasks, result, group_id, partial_args, add_to_parent=0):
     return 1
 
-DEBUG 2024-08-07 13:00:36,648 functional 4096 8716307456 
+DEBUG 2024-08-08 13:58:03,977 functional 16395 8716307456 
 def xmap(task, it):
-    return 1
-
-DEBUG 2024-08-07 13:00:36,648 functional 4096 8716307456 
-def backend_cleanup():
     return 1
 

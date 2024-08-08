@@ -4,3 +4,17 @@ DEBUG 2024-08-07 16:06:59,241 views 8853 6135869440 Events found
 DEBUG 2024-08-07 16:10:46,947 views 8951 6159626240 Events found
 DEBUG 2024-08-07 16:21:16,247 views 9449 6134837248 Event found
 ERROR 2024-08-07 16:23:04,933 views 9497 6157250560 Error occurred: 'int' object has no attribute 'username'
+DEBUG 2024-08-07 16:41:23,946 views 9716 6197407744 Event found
+DEBUG 2024-08-07 16:41:27,442 views 9716 6197407744 Event Sample Event deleted
+DEBUG 2024-08-07 17:54:30,101 views 11792 6201749504 No event found or event is in the past
+DEBUG 2024-08-07 17:55:00,254 views 11792 6201749504 No event found or event is in the past
+DEBUG 2024-08-07 17:55:34,309 views 11792 6201749504 No event found or event is in the past
+DEBUG 2024-08-07 17:56:30,964 views 11792 6201749504 No event found or event is in the past
+DEBUG 2024-08-07 17:57:00,353 views 11792 6201749504 No event found or event is in the past
+DEBUG 2024-08-07 17:57:36,179 views 11792 6201749504 No event found or event is in the past
+DEBUG 2024-08-07 17:58:45,159 views 11902 6112505856 Event found: Meeting with eyal, starting_time: 2024-08-05 18:30:12+00:00, current_time: 2024-08-07 14:58:45.159467+00:00
+DEBUG 2024-08-07 17:58:45,159 views 11902 6112505856 Event is in the past: 2024-08-05 18:30:12+00:00 <= 2024-08-07 14:58:45.159625+00:00
+DEBUG 2024-08-07 17:59:03,684 views 11902 6112505856 Event found: Meeting with eyal, starting_time: 2024-08-05 18:30:12+00:00, current_time: 2024-08-07 14:59:03.684793+00:00
+DEBUG 2024-08-07 17:59:03,685 views 11902 6112505856 Event is in the past: 2024-08-05 18:30:12+00:00 <= 2024-08-07 14:59:03.685021+00:00
+DEBUG 2024-08-07 17:59:43,368 views 11902 6112505856 Event found: Meeting with eyal, starting_time: 2024-08-07 18:30:12+00:00, current_time: 2024-08-07 14:59:43.367991+00:00
+DEBUG 2024-08-07 17:59:46,542 views 11902 6112505856 Event has been updated
