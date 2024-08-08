@@ -94,36 +94,41 @@ def event(request,id):
                 return Response({'message': 'No event found'}, status=404)
 
         # Update event
-        elif request.method == 'PUT':
+        if request.method == 'PUT':
             event = Event.objects.filter(id=id).first()
-            if event and event.starting_time > timezone.now():
-                data = request.data
-                event.name = data.get('name', event.name)
-                event.starting_time = data.get('starting_time', event.starting_time)
-                event.end_time = data.get('end_time', event.end_time)
-                event.location = data.get('location', event.location)
-                event.updated_at = timezone.now()
+            if event:
+                events_logger.debug(f'Event found: {event.name}, starting_time: {event.starting_time}, current_time: {timezone.now()}')
+                if event.starting_time > timezone.now():
+                    data = request.data
+                    event.name = data.get('name', event.name)
+                    event.starting_time = data.get('starting_time', event.starting_time)
+                    event.end_time = data.get('end_time', event.end_time)
+                    event.location = data.get('location', event.location)
+                    event.updated_at = timezone.now()
 
-                if 'participants' in data:
-                    event.participants.clear()
-                    for participant_id in data['participants']:
-                        event.participants.add(participant_id)
+                    if 'participants' in data:
+                        event.participants.clear()
+                        for participant_id in data['participants']:
+                            event.participants.add(participant_id)
 
-                event.save()
-                events_logger.debug('Event has been updated')
+                    event.save()
+                    events_logger.debug('Event has been updated')
 
-                channel_layer = get_channel_layer()
-                async_to_sync(channel_layer.group_send)(
-                    f'event_{event.id}',
-                    {
-                        'type': 'event_message',
-                        'message': f'Event "{event.name}" has been updated.'
-                    }
-                )
-                return Response({'message': 'Event has been updated'}, status=200)
+                    channel_layer = get_channel_layer()
+                    async_to_sync(channel_layer.group_send)(
+                        f'event_{event.id}',
+                        {
+                            'type': 'event_message',
+                            'message': f'Event "{event.name}" has been updated.'
+                        }
+                    )
+                    return Response({'message': 'Event has been updated'}, status=200)
+                else:
+                    events_logger.debug(f'Event is in the past: {event.starting_time} <= {timezone.now()}')
+                    return Response({'message': 'Event is in the past'}, status=404)
             else:
-                events_logger.debug('No event found or event is in the past')
-                return Response({'message': 'No event found or event is in the past'}, status=404)
+                events_logger.debug(f'No event found with id: {id}')
+                return Response({'message': 'No event found'}, status=404)
 
         # Delete event
         elif request.method == 'DELETE':
@@ -196,7 +201,7 @@ def signin(request):
 
 
 @api_view(['GET', 'POST'])
-def users(request,email,password,username):
+def users(request):
     try:
         # Return all users
         if request.method == 'GET':
@@ -211,11 +216,12 @@ def users(request,email,password,username):
         
         # Create a new User
         if request.method == 'POST':
+            data = request.data  
             new_user = User.objects.create(
                 id = uuid.uuid4(),
-                username=username,
-                email = email,
-                password = password,
+                username = data.get('username'),
+                email = data.get('email'),
+                password = data.get('password'),
                 created_at = timezone.now(),
                 updated_at = timezone.now()
             )
