@@ -205,6 +205,7 @@ def signin(request):
 
 
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
 def users(request):
     try:
         # Return all users
@@ -239,6 +240,7 @@ def users(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def user_detail(request, user_id):
     try:
         # Retrieve specific user by ID
