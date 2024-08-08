@@ -73,7 +73,7 @@ class EventTestCase(TestCase):
 
 
 
-class UserTestCase(TestCase):
+class AuthTestCase(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(username='admin', email='testuser@example.com', password='admin')
@@ -120,3 +120,65 @@ class UserTestCase(TestCase):
         self.assertIn('error', response.data)
 
    
+
+class UserDetailTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='testuser', email='testuser@example.com', password='testpassword')
+        self.user_detail_url = reverse('user_detail', args=[self.user.id])
+        
+        # Log in the test user and get the token
+        login_response = self.client.post(reverse('signin'), {
+            'username': 'testuser',
+            'password': 'testpassword'
+        }, content_type='application/json')
+        self.assertEqual(login_response.status_code, status.HTTP_200_OK)
+        self.token = login_response.data['access']
+        self.auth_headers = {'HTTP_AUTHORIZATION': f'Bearer {self.token}'}
+
+    def test_get_user_detail(self):
+        response = self.client.get(self.user_detail_url, **self.auth_headers)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['user']['username'], 'testuser')
+        self.assertEqual(response.data['user']['email'], 'testuser@example.com')
+
+    def test_get_user_detail_not_found(self):
+        response = self.client.get(reverse('user_detail', args=[999]), **self.auth_headers)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data['message'], 'No user found')
+
+    def test_update_user_detail(self):
+        data = {'email': 'updatedemail@example.com', 'username': 'updatedusername'}
+        response = self.client.put(self.user_detail_url, data=json.dumps(data), content_type='application/json', **self.auth_headers)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.email, 'updatedemail@example.com')
+        self.assertEqual(self.user.username, 'updatedusername')
+
+    def test_update_user_detail_not_found(self):
+        data = {'email': 'updatedemail@example.com', 'username': 'updatedusername'}
+        response = self.client.put(reverse('user_detail', args=[999]), data=json.dumps(data), content_type='application/json', **self.auth_headers)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data['message'], 'No user found')
+
+    def test_delete_user(self):
+        response = self.client.delete(self.user_detail_url, **self.auth_headers)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(User.objects.filter(id=self.user.id).exists())
+
+    def test_delete_user_not_found(self):
+        response = self.client.delete(reverse('user_detail', args=[999]), **self.auth_headers)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data['message'], 'No user found')
+
+    def test_unauthenticated_access(self):
+        response = self.client.get(self.user_detail_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        response = self.client.put(self.user_detail_url, data=json.dumps({'email': 'newemail@example.com'}), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        response = self.client.delete(self.user_detail_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        
