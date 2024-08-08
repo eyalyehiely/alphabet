@@ -3,48 +3,241 @@
 
 ## Introduction
 
-This project is designed to help students and mentors conduct remote coding sessions. 
-by writing and changing the code in real-time. 
-The application consists of two main pages:
-- The Lobby page.
-- The Code Block page.
-
-## Features
-
-### Lobby Page
-
-- The Lobby page displays a list of code blocks.
-- Users can choose a code block, which will navigate them to the Code Block page.
-
-### Code Block Page
-
-- The first user to open the Code Block page is considered the mentor, other subsequent users are students.
-- The mentor sees the code block in read-only mode.
-- Students can edit the code block, changes are displayed in real-time using WebSockets.
+The Events Management API is a backend solution designed for creating, managing, and broadcasting events in real-time. Built with Django and the Django REST framework,and celery.
+Django Channels are integrated to provide real-time functionality, enabling live updates and interactions between the server and clients through WebSockets.
 
 
-### Check Code - Bonus Feature
-
-- Each code block can have a “solution” field. If the student's code matches the solution, a big smiley face is displayed on the screen.
 
 
-### Architecture Overview and Tech Stack
-https://drive.google.com/file/d/11PUG5nbp-kBrYvv6zQMQ_D0fP5pAH9bx/view?usp=drive_link
 
 ## Tech 
 
 
-- **Socket.IO**: For real-time communication between the mentor and student.
-
-### Backend
-
 - **Django**: For the backend server and handling API requests.
 - **Django Channels**: For WebSocket support to enable real-time updates.
 - **Django Rest Framework**: For building RESTful APIs.
+- **Celery**: For sending email notifications.
+
+
+### Authentication:
+- **JWT**
 
 ### Database
+- **SQLITE**
 
-- **Redis**:
+
+
+
+
+### API Documentation
+---
+
+```
+ws/events/${event_id}/
+```
+This WebSocket endpoint is used to establish a real-time notifications between backend and frontend.
+- **Path Parameters**:
+- ```user_id ```: The event id.
+
+
+---
+```
+GET /api/events/
+```
+This endpoint fetch all events.
+- **Response**:
+
+- ```id ```: The event id.
+- ```name```: The event name.
+- ```starting_time```: The event starting_time.
+- ```end_time```: The event end time.
+- ```location```: The event location.
+- ```participants```: The event participants.
+- ```created_at```: The event created time.
+- ```updated_at```: The event updated time.
+
+
+
+```
+POST /api/events/
+```
+This endpoint create event.
+
+- **Request Body**:
+
+- ```id ```: The event id.
+- ```name```: The event name.
+- ```starting_time```: The event starting_time.
+- ```end_time```: The event end time.
+- ```location```: The event location.
+- ```participants```: The event participants.
+- ```created_at```: The event created time.
+- ```updated_at```: The event updated time.
+
+- **Response**:
+A message that event is created + an email with the event details.
+
+
+
+```
+GET /api/event/{id}
+```
+This endpoint get a specific event details.
+
+**Request Body**:
+- ```id```: The event unique id.
+
+
+
+
+**Response**:
+
+- ```id ```: The event id.
+- ```name```: The event name.
+- ```starting_time```: The event starting_time.
+- ```end_time```: The event end time.
+- ```location```: The event location.
+- ```participants```: The event participants.
+- ```created_at```: The event created time.
+- ```updated_at```: The event updated time.
+
+
+
+```
+PUT /api/event/{id}
+```
+This endpoint update a specific event if it is not already happend,
+send real time notification to the front and send an email to participants.
+
+**Request Body**:
+- user decision according to the properties.
+
+
+
+**Response**:
+
+A real time notification to the front and send an email to participants.
+
+
+```
+DELETE /api/event/{id}
+```
+Delete a specific event.
+
+**Request Body**:
+- ```id```: The event unique id.
+
+
+**Response**:
+- A meesage of the event that deleted.
+
+
+
+
+```
+GET /api/search_event/{location}
+```
+Get all events on specific location.
+
+**Request Body**:
+- ```location```: The location of the event.
+
+
+**Response**:
+- A list of all events on the location.
+
+
+
+```
+POST /api/auth/signin/
+```
+User sign in to app - using JWT.
+
+**Request Body**:
+- ```username```: user username.
+- ```password```: user password.
+
+
+**Response**:
+- access token.
+- refresh token.
+
+
+```
+POST /api/auth/signup/
+```
+User sign up to app - using JWT.
+
+**Request Body**:
+- ```username```: user username.
+- ```eamil```: user eamil.
+- ```password```: user password.
+
+
+**Response**:
+- access token.
+- refresh token.
+
+
+
+```
+GET /api/user/{user_id}
+```
+This endpoint get a specific user details.
+
+**Request Body**:
+- ```user_id```: user id.
+
+
+
+**Response**:
+"user": {
+        "id": user_id,
+        "username": "username",
+        "email": "email",
+        "created_at": "date and time",
+        "updated_at": date and time
+    }
+
+
+
+```
+PUT /api/user/{user_id}
+```
+This endpoint update a specific user details.
+
+**Request Body**:
+- ```user_id```: user id.
+- ```email```: email / ```username```: username.
+
+
+
+**Response**:
+"user": {
+        "id": user_id,
+        "username": "username",
+        "email": "email",
+        "created_at": "date and time",
+        "updated_at": date and time
+    }
+
+
+
+```
+DELETE /api/user/{user_id}
+```
+This endpoint delete a specific user.
+
+**Request Body**:
+- ```user_id```: user id.
+
+
+
+**Response**:
+A message that the user has been deleted.
+
+
+
 
 
 ## Quick Start
@@ -67,12 +260,11 @@ docker pull eyalyehiely/backend:latest
 
 
 
-## Local Development without Docker
+## Local Development without github
 
 1. Clone the backend repository:
     ```bash
     https://github.com/eyalyehiely/alphabet/
-    cd learning/backend
     ```
 
 2. Create a virtual environment and activate it:
@@ -90,171 +282,28 @@ docker pull eyalyehiely/backend:latest
     pip install -r requirements.txt
     ```
 
-4. Set up the database (make sure PostgreSQL is installed and running):
-    ```bash
-    on macOS:
-    python3 manage.py makemigrations
-    python3 manage.py migrate
-    on Windows:
-    python manage.py makemigrations
-    python manage.py migrate
-    ```
 
-5. Run the development server:
+
+4. Run the development server(server):
     ```bash
     daphne -p 8000 backend.asgi:application
 
-6. Run the redis server:
+5. Run the redis server(websocket):
     ```
     redis-server
     ```
-    
 
+6.  Run celery(email notifications):
+    ```
+    celery -A alphabet worker -l info
+    celery -A alphabet beat -l info
+    ```
 
 
-### API Documentation
----
 
-```
-ws/codeblock/${id}/
-```
-This WebSocket endpoint is used to establish a real-time connection between student to teacher.
-- **Path Parameters**:
-- ```id ```: The code block id.
 
 
----
-```
-GET /codeblocks/
-```
-This endpoint fetch all code blocks to the Lobby page.
-- **Response**:
 
-- ```id ```: The code block id.
-- ```title```: The code block title.
-- ```instructions```: The code block instructions.
-- ```code```: The code block script.
-
-
-```
-POST /codeblock/${id}/check/
-```
-This endpoint checks if the user script is correct.
-
-**Request Body**:
-- ```code```: The user script.
-- ```user_id```: The user unique id.
-
-
-
-**Response**:
-
-- ```id ```: The code block id.
-- ```title```: The code block title.
-- ```instructions```: The code block instructions.
-- ```code```: The code block script.
-
-A message indicating if the script is correct.
-
-
-
-
-```
-POST /fetchClientUuidToServer/
-```
-This endpoint send to the server the user unique id.
-
-**Request Body**:
-- ```user_id```: The user unique id.
-
-
-
-**Response**:
-
-A message indicating if the user_id accepted.
-
-
-
-```
-POST /codeblock/submission/
-```
-This endpoint create a new submission if there isnt already one.
-
-**Request Body**:
-- ```user_id```: The user unique id.
-- ```code_block_id```: The original script id.
-
-
-
-
-
-**Response**:
-
-A message if submission exist or create a new one.
-
-
-```
-GET,DELETE /codeblock/submission/{id}/?user_id={clientUUID}
-```
-
-
-**GET:**
-
-**Response**:
-- Return the current submission or try to create one.
-
-
-**DELETE:**
-
-**Response**:
-DELETE the current submission.
-
-
-
-
-
-```
-PUT /codeblock/submission/{id}/?user_id={clientUUID}
-```
-This endpoint edit the current submission.
-
-**Request Body**:
-- ```code```: The user script.
-- ```code_block_id```: The original script id.
-- ```user_id```: The user unique id.
-
-
-
-
-**Response**:
-
-Saving the new submission or send an error message.
-
-
-
-
-
-```
-POST /log_visitor/
-```
-This endpoint check how many users are in the same submission and determine a role.
-
-**Request Body**:
-- ```user_id```: The user unique id.
-- ```url```: The submission url.
-
-
-
-
-**Response**:
-
-Saving the new role & send data:
-- ```user_id```: The user unique id.
-- ```url```: The submission url.
-- ```role```: The current role.
-
----
-Good luck!
 
 
 
