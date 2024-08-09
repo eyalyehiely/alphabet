@@ -253,7 +253,7 @@ Follow these steps to set up and run the application using Docker:
 ## Run Containers
 Start each service with the following command:
 ```
-docker pull eyalyehiely/backend:latest
+docker pull eyalyehiely/alphabet:latest
 (port8000)
 ```
 
