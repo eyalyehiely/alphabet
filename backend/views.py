@@ -191,6 +191,121 @@ def search_event(request, location):
     events = Event.objects.filter(location__icontains=location)
     serializer = EventSerializer(events, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+
+
+@api_view(['POST', 'PUT', 'DELETE'])
+@ratelimit(key='user', rate='10/m', method=['POST', 'PUT', 'DELETE'], block=True)
+@permission_classes([IsAuthenticated])
+def batch_events(request):
+    try:
+        data = request.data
+        
+        if request.method == 'POST':
+            # Batch create events
+            events = []
+            for event_data in data:
+                new_event = Event(
+                    id=uuid.uuid4(),
+                    name=event_data['name'],
+                    starting_time=event_data['starting_time'],
+                    end_time=event_data['end_time'],
+                    location=event_data['location'],
+                    created_at=timezone.now(),
+                    updated_at=timezone.now()
+                )
+                participants = []
+                if 'participants' in event_data:
+                    for username in event_data['participants']:
+                        try:
+                            participant = User.objects.get(username=username)
+                            new_event.participants.add(participant)
+                            participants.append(participant.email)
+                        except User.DoesNotExist:
+                            events_logger.warning(f'User {username} does not exist')
+                new_event.save()
+                events.append(new_event)
+                send_update_email.delay(new_event.id, participants, 'created')
+                
+                channel_layer = get_channel_layer()
+                async_to_sync(channel_layer.group_send)(
+                    f'event_{new_event.id}',
+                    {
+                        'type': 'event_message',
+                        'message': f'Event "{new_event.name}" has been created.'
+                    }
+                )
+            events_logger.debug('Batch events created')
+            return Response({'message': 'Batch events created successfully'}, status=201)
+
+        elif request.method == 'PUT':
+            # Batch update events
+            for event_data in data:
+                event = Event.objects.filter(id=event_data['id']).first()
+                if event:
+                    events_logger.debug(f'Event found: {event.name}, starting_time: {event.starting_time}, current_time: {timezone.now()}')
+                    if event.starting_time > timezone.now():
+                        event.name = event_data.get('name', event.name)
+                        event.starting_time = event_data.get('starting_time', event.starting_time)
+                        event.end_time = event_data.get('end_time', event.end_time)
+                        event.location = event_data.get('location', event.location)
+                        event.updated_at = timezone.now()
+
+                        participants = []
+                        if 'participants' in event_data:
+                            event.participants.clear()
+                            for username in event_data['participants']:
+                                try:
+                                    participant = User.objects.get(username=username)
+                                    event.participants.add(participant)
+                                    participants.append(participant.email)
+                                except User.DoesNotExist:
+                                    events_logger.warning(f'User {username} does not exist')
+
+                        event.save()
+                        send_update_email.delay(event.id, participants, 'updated')
+                        events_logger.debug('Event has been updated')
+
+                        channel_layer = get_channel_layer()
+                        async_to_sync(channel_layer.group_send)(
+                            f'event_{event.id}',
+                            {
+                                'type': 'event_message',
+                                'message': f'Event "{event.name}" has been updated.'
+                            }
+                        )
+                    else:
+                        events_logger.debug(f'Event is in the past: {event.starting_time} <= {timezone.now()}')
+            return Response({'message': 'Batch events updated successfully'}, status=200)
+
+        elif request.method == 'DELETE':
+            # Batch delete events
+            for event_id in data:
+                event = Event.objects.filter(id=event_id).first()
+                if event:
+                    participants = [participant.email for participant in event.participants.all()]
+                    events_logger.debug('Event found')
+                    event.delete()
+                    send_update_email.delay(event.id, participants, 'deleted')
+                    channel_layer = get_channel_layer()
+                    async_to_sync(channel_layer.group_send)(
+                        f'event_{event.id}',
+                        {
+                            'type': 'event_message',
+                            'message': f'Event "{event.name}" has been deleted.'
+                        }
+                    )
+                    events_logger.debug(f'Event {event.name} deleted')
+            return Response({'message': 'Batch events deleted successfully'}, status=200)
+                
+    except (ValueError, TypeError) as e:
+        events_logger.debug(f'Invalid data received: {e}')
+        return Response({'error': str(e)}, status=400)
+    except Exception as e:
+        events_logger.error(f'Error occurred: {e}')
+        return Response({'error': str(e)}, status=500)
 # --------------------------------------------------users----------------------------------------------------------------------------------------------------
 @csrf_exempt
 @api_view(['POST'])
