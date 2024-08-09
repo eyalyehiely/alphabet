@@ -14,3 +14,19 @@ DEBUG 2024-08-08 17:44:25,809 views 21310 6114488320 Event has been updated
 DEBUG 2024-08-08 17:45:06,165 views 21310 6114488320 Event found
 DEBUG 2024-08-08 17:45:09,500 views 21310 6114488320 Event s Event deleted
 DEBUG 2024-08-08 17:47:09,295 views 21310 6114488320 New event saved
+ERROR 2024-08-08 19:00:50,400 views 23785 8716307456 Error occurred: 'function' object has no attribute 'id'
+DEBUG 2024-08-08 19:00:50,923 views 23785 8716307456 Event found
+DEBUG 2024-08-08 19:00:52,783 views 23785 8716307456 Event Event 1 deleted
+DEBUG 2024-08-08 19:00:53,290 views 23785 8716307456 Event found
+DEBUG 2024-08-08 19:00:53,793 views 23785 8716307456 Events found
+DEBUG 2024-08-08 19:00:54,296 views 23785 8716307456 Event found: Event 1, starting_time: 2024-08-09 16:00:54.294390+00:00, current_time: 2024-08-08 16:00:54.296772+00:00
+DEBUG 2024-08-08 19:00:55,840 views 23785 8716307456 Event has been updated
+DEBUG 2024-08-08 20:34:08,638 views 25289 8716307456 Invalid data received: Cannot add "<User: testuser>": instance is on database "None", value is on database "default"
+DEBUG 2024-08-08 20:34:09,495 views 25289 8716307456 Event found
+DEBUG 2024-08-08 20:34:11,558 views 25289 8716307456 Event Event 1 deleted
+DEBUG 2024-08-08 20:34:11,559 views 25289 8716307456 Event found
+DEBUG 2024-08-08 20:34:13,196 views 25289 8716307456 Event Event 2 deleted
+DEBUG 2024-08-08 20:34:13,720 views 25289 8716307456 Event found: Event 1, starting_time: 2024-08-09 17:34:13.718573+00:00, current_time: 2024-08-08 17:34:13.720886+00:00
+DEBUG 2024-08-08 20:34:15,480 views 25289 8716307456 Event has been updated
+DEBUG 2024-08-08 20:34:15,486 views 25289 8716307456 Event found: Event 2, starting_time: 2024-08-10 17:34:13.718580+00:00, current_time: 2024-08-08 17:34:15.486741+00:00
+DEBUG 2024-08-08 20:34:17,698 views 25289 8716307456 Event has been updated

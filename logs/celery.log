@@ -182,3 +182,99 @@ DEBUG 2024-08-08 17:44:25,757 functional 21310 6114488320
 def unlock_chord(self, group_id, callback, interval=0, max_retries=1, result=2, Result=3, GroupResult=4, result_from_tuple=5, **kwargs):
     return 1
 
+DEBUG 2024-08-08 19:00:50,340 functional 23785 8716307456 
+def backend_cleanup():
+    return 1
+
+DEBUG 2024-08-08 19:00:50,342 functional 23785 8716307456 
+def group(self, tasks, result, group_id, partial_args, add_to_parent=0):
+    return 1
+
+DEBUG 2024-08-08 19:00:50,342 functional 23785 8716307456 
+def xmap(task, it):
+    return 1
+
+DEBUG 2024-08-08 19:00:50,343 functional 23785 8716307456 
+def debug_task(self):
+    return 1
+
+DEBUG 2024-08-08 19:00:50,343 functional 23785 8716307456 
+def accumulate(self, *args, **kwargs):
+    return 1
+
+DEBUG 2024-08-08 19:00:50,344 functional 23785 8716307456 
+def chain(*args, **kwargs):
+    return 1
+
+DEBUG 2024-08-08 19:00:50,344 functional 23785 8716307456 
+def xstarmap(task, it):
+    return 1
+
+DEBUG 2024-08-08 19:00:50,344 functional 23785 8716307456 
+def send_event_reminder():
+    return 1
+
+DEBUG 2024-08-08 19:00:50,344 functional 23785 8716307456 
+def unlock_chord(self, group_id, callback, interval=0, max_retries=1, result=2, Result=3, GroupResult=4, result_from_tuple=5, **kwargs):
+    return 1
+
+DEBUG 2024-08-08 19:00:50,345 functional 23785 8716307456 
+def chord(self, header, body, partial_args=0, interval=1, countdown=2, max_retries=3, eager=4, **kwargs):
+    return 1
+
+DEBUG 2024-08-08 19:00:50,345 functional 23785 8716307456 
+def chunks(task, it, n):
+    return 1
+
+DEBUG 2024-08-08 19:00:50,345 functional 23785 8716307456 
+def send_update_email(event_id, participants, action):
+    return 1
+
+DEBUG 2024-08-08 20:34:11,493 functional 25289 8716307456 
+def send_event_reminder():
+    return 1
+
+DEBUG 2024-08-08 20:34:11,495 functional 25289 8716307456 
+def backend_cleanup():
+    return 1
+
+DEBUG 2024-08-08 20:34:11,495 functional 25289 8716307456 
+def group(self, tasks, result, group_id, partial_args, add_to_parent=0):
+    return 1
+
+DEBUG 2024-08-08 20:34:11,495 functional 25289 8716307456 
+def xmap(task, it):
+    return 1
+
+DEBUG 2024-08-08 20:34:11,495 functional 25289 8716307456 
+def send_update_email(event_id, participants, action):
+    return 1
+
+DEBUG 2024-08-08 20:34:11,496 functional 25289 8716307456 
+def debug_task(self):
+    return 1
+
+DEBUG 2024-08-08 20:34:11,496 functional 25289 8716307456 
+def accumulate(self, *args, **kwargs):
+    return 1
+
+DEBUG 2024-08-08 20:34:11,496 functional 25289 8716307456 
+def chain(*args, **kwargs):
+    return 1
+
+DEBUG 2024-08-08 20:34:11,496 functional 25289 8716307456 
+def xstarmap(task, it):
+    return 1
+
+DEBUG 2024-08-08 20:34:11,497 functional 25289 8716307456 
+def unlock_chord(self, group_id, callback, interval=0, max_retries=1, result=2, Result=3, GroupResult=4, result_from_tuple=5, **kwargs):
+    return 1
+
+DEBUG 2024-08-08 20:34:11,497 functional 25289 8716307456 
+def chord(self, header, body, partial_args=0, interval=1, countdown=2, max_retries=3, eager=4, **kwargs):
+    return 1
+
+DEBUG 2024-08-08 20:34:11,497 functional 25289 8716307456 
+def chunks(task, it, n):
+    return 1
+
