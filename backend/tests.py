@@ -7,7 +7,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
 from rest_framework import status
-import json
+import json,uuid
 
 class EventTestCase(TestCase):
     def setUp(self):
@@ -181,4 +181,101 @@ class UserDetailTestCase(TestCase):
         response = self.client.delete(self.user_detail_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
+
+class BatchEventTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='testuser', email='testuser@example.com', password='testpassword')
         
+        # Log in the test user and get the token
+        login_response = self.client.post(reverse('signin'), {
+            'username': 'testuser',
+            'password': 'testpassword'
+        }, content_type='application/json')
+        self.assertEqual(login_response.status_code, status.HTTP_200_OK)
+        self.token = login_response.data['access']
+        self.auth_headers = {'HTTP_AUTHORIZATION': f'Bearer {self.token}'}
+
+        self.event1_start_time = timezone.now() + timezone.timedelta(days=1)
+        self.event1_end_time = self.event1_start_time + timezone.timedelta(hours=2)
+        self.event2_start_time = timezone.now() + timezone.timedelta(days=2)
+        self.event2_end_time = self.event2_start_time + timezone.timedelta(hours=2)
+
+        self.event1 = Event.objects.create(
+            id=uuid.uuid4(),
+            name='Event 1', 
+            location='Location 1',
+            starting_time=self.event1_start_time, 
+            end_time=self.event1_end_time,
+            created_at=timezone.now(),
+            updated_at=timezone.now()
+        )
+        self.event1.participants.add(self.user)
+
+        self.event2 = Event.objects.create(
+            id=uuid.uuid4(),
+            name='Event 2', 
+            location='Location 2',
+            starting_time=self.event2_start_time, 
+            end_time=self.event2_end_time,
+            created_at=timezone.now(),
+            updated_at=timezone.now()
+        )
+        self.event2.participants.add(self.user)
+
+    def test_batch_create_events(self):
+        data = [
+            {
+                'name': 'Event 3',
+                'starting_time': (timezone.now() + timezone.timedelta(days=3)).isoformat(),
+                'end_time': (timezone.now() + timezone.timedelta(days=3, hours=2)).isoformat(),
+                'location': 'Location 3',
+                'participants': ['testuser']
+            },
+            {
+                'name': 'Event 4',
+                'starting_time': (timezone.now() + timezone.timedelta(days=4)).isoformat(),
+                'end_time': (timezone.now() + timezone.timedelta(days=4, hours=2)).isoformat(),
+                'location': 'Location 4',
+                'participants': ['testuser']
+            }
+        ]
+        response = self.client.post(reverse('batch_events'), data=json.dumps(data), content_type='application/json', **self.auth_headers)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(Event.objects.filter(name='Event 3').exists())
+        self.assertTrue(Event.objects.filter(name='Event 4').exists())
+
+    def test_batch_update_events(self):
+        data = [
+            {
+                'id': str(self.event1.id),
+                'name': 'Updated Event 1',
+                'starting_time': (timezone.now() + timezone.timedelta(days=1, hours=1)).isoformat(),
+                'end_time': (timezone.now() + timezone.timedelta(days=1, hours=3)).isoformat(),
+                'location': 'Updated Location 1',
+                'participants': ['testuser']
+            },
+            {
+                'id': str(self.event2.id),
+                'name': 'Updated Event 2',
+                'starting_time': (timezone.now() + timezone.timedelta(days=2, hours=1)).isoformat(),
+                'end_time': (timezone.now() + timezone.timedelta(days=2, hours=3)).isoformat(),
+                'location': 'Updated Location 2',
+                'participants': ['testuser']
+            }
+        ]
+        response = self.client.put(reverse('batch_events'), data=json.dumps(data), content_type='application/json', **self.auth_headers)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.event1.refresh_from_db()
+        self.event2.refresh_from_db()
+        self.assertEqual(self.event1.name, 'Updated Event 1')
+        self.assertEqual(self.event1.location, 'Updated Location 1')
+        self.assertEqual(self.event2.name, 'Updated Event 2')
+        self.assertEqual(self.event2.location, 'Updated Location 2')
+
+    def test_batch_delete_events(self):
+        data = [str(self.event1.id), str(self.event2.id)]
+        response = self.client.delete(reverse('batch_events'), data=json.dumps(data), content_type='application/json', **self.auth_headers)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(Event.objects.filter(id=self.event1.id).exists())
+        self.assertFalse(Event.objects.filter(id=self.event2.id).exists())
